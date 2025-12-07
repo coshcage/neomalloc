@@ -1,3 +1,26 @@
+/*
+ * Name:        neomalloc.c
+ * Description: Neo malloc core function.
+ * Author:      cosh.cage#hotmail.com
+ * File ID:     1207250701A1C07250908L00062
+ * License:     LGPLv3
+ * Copyright (C) 2025 John Cage
+ *
+ * This file is part of Neo Malloc.
+ *
+ * Neo Malloc is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * Neo Malloc is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with StoneValley.
+ * If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "neomalloc.h"
 
 #define SIZ 128

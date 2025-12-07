@@ -2,7 +2,7 @@
  * Name:        neomalloc.c
  * Description: Neo malloc core function.
  * Author:      cosh.cage#hotmail.com
- * File ID:     1207250701A1207250800L00651
+ * File ID:     1207250701A1207250911L00658
  * License:     LGPLv3
  * Copyright (C) 2025 John Cage
  *
@@ -65,7 +65,7 @@ enum en_FreeChunkPointer
 {
 	FCP_PREV = 0,
 	FCP_NEXT = 1,
-	FCP_MAX = 2
+	FCP_MAX  = 2
 };
 
 /* Used and unused mark. */
@@ -580,6 +580,11 @@ void * nmReallocHeap(P_HEAP_HEADER ph, void * ptr, size_t size)
 
 	if (NULL == ptr)
 		return nmAllocHeap(ph, size);
+	else if (0 == size)
+	{
+		nmFreeHeap(ph, ptr);
+		return NULL;
+	}
 
 	size = ASIZE(size);
 	i = _nmCLZ(size) - _nmCLZ(ph->size);

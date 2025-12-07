@@ -2,7 +2,7 @@
  * Name:        neomalloc.c
  * Description: Neo malloc core function.
  * Author:      cosh.cage#hotmail.com
- * File ID:     1207250701A1207250708L00050
+ * File ID:     1207250701B1B07250708L00050
  * License:     LGPLv3
  * Copyright (C) 2025 John Cage
  *
@@ -21,13 +21,13 @@
  *
  */
  
- #ifndef _NEOMALLOC_H_
- #define _NEOMALLOC_H_
+#ifndef _NEOMALLOC_H_
+#define _NEOMALLOC_H_
+
+#include <stddef.h>  /* Using type size_t. */
+#include <stdbool.h> /* Boolean type and constants. */
  
- #include <stddef.h>  /* Using type size_t. */
- #include <stdbool.h> /* Boolean type and constants. */
- 
- /* Define constant NULL. */
+/* Define constant NULL. */
 #ifndef NULL
 #define NULL ((void *)0)
 #endif

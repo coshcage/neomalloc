@@ -22,6 +22,7 @@
  */
 
 #include "neomalloc.h"
+#include <string.h>
 
 #define SIZ 128
 
@@ -31,6 +32,8 @@ int main()
 {
 	P_HEAP_HEADER ph;
 	void * p1;
+
+	memset(buff, 0xff, SIZ * 2);
 	
 	ph = nmCreateHeap(buff, SIZ, 7);
 	

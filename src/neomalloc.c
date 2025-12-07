@@ -2,7 +2,7 @@
  * Name:        neomalloc.c
  * Description: Neo malloc core function.
  * Author:      cosh.cage#hotmail.com
- * File ID:     1207250701A1207250911L00658
+ * File ID:     1207250701A1207250923L00662
  * License:     LGPLv3
  * Copyright (C) 2025 John Cage
  *
@@ -482,7 +482,7 @@ void nmFreeHeap(P_HEAP_HEADER ph, void * ptr)
 		return;
 
 	/* Get upper bound. */
-	if ((PUCHAR)pfc - sizeof(size_t) == (PUCHAR)ph + HEAP_BEGIN(ph))
+	if ((PUCHAR)pfc - sizeof(size_t) <= (PUCHAR)ph + HEAP_BEGIN(ph))
 		bhed = USED;
 
 	upcolsiz = 0;
@@ -509,7 +509,7 @@ void nmFreeHeap(P_HEAP_HEADER ph, void * ptr)
 		else
 			break;
 
-		if ((PUCHAR)pfc - sizeof(size_t) == (PUCHAR)ph + HEAP_BEGIN(ph))
+		if ((PUCHAR)pfc - sizeof(size_t) <= (PUCHAR)ph + HEAP_BEGIN(ph))
 			bhed = USED;
 	} while (USED != bhed);
 
@@ -518,24 +518,24 @@ void nmFreeHeap(P_HEAP_HEADER ph, void * ptr)
 	/* Get lower bound. */
 	chksiz = HEAD_NOTE(pfc) & ~(size_t)MASK;
 
-	if ((PUCHAR)pfc + chksiz + sizeof(size_t) - ((PUCHAR)ph + HEAP_BEGIN(ph)) == ph->size)
+	if (ASIZE((PUCHAR)pfc + chksiz + sizeof(size_t) - ((PUCHAR)ph + HEAP_BEGIN(ph))) >= ph->size)
 		bbtm = USED;
 
 	lwcolsiz = 0;
 	lwcolcnt = 0;
 
-	if (FREE == bbtm)
+	while (FREE == bbtm && FREE == !!(*(size_t *)((PUCHAR)pfc + chksiz + sizeof(size_t)) & (size_t)MASK))
 	{
-		while (FREE == !!(*(size_t *)((PUCHAR)pfc + chksiz + sizeof(size_t)) & (size_t)MASK))
-		{
-			pfc = (P_FREE_CHUNK)((PUCHAR)pfc + chksiz + 2 * sizeof(size_t));
-			chksiz = HEAD_NOTE(pfc) & ~(size_t)MASK;
-			lwcolsiz += chksiz;
-			++lwcolcnt;
+		pfc = (P_FREE_CHUNK)((PUCHAR)pfc + chksiz + 2 * sizeof(size_t));
+		chksiz = HEAD_NOTE(pfc) & ~(size_t)MASK;
+		lwcolsiz += chksiz;
+		++lwcolcnt;
 
-			/* Unlink chunk. */
-			_nmUnlinkChunk(ph, pfc);
-		}
+		/* Unlink chunk. */
+		_nmUnlinkChunk(ph, pfc);
+
+		if (ASIZE((PUCHAR)pfc + chksiz + sizeof(size_t) - ((PUCHAR)ph + HEAP_BEGIN(ph))) >= ph->size)
+			bbtm = USED;
 	}
 
 	/* Coalesce up and downward. */
@@ -606,24 +606,24 @@ void * nmReallocHeap(P_HEAP_HEADER ph, void * ptr, size_t size)
 		/* Get lower bound. */
 		chksiz = HEAD_NOTE(pfc) & ~(size_t)MASK;
 
-		if ((PUCHAR)pfc + chksiz + sizeof(size_t) - ((PUCHAR)ph + HEAP_BEGIN(ph)) == ph->size)
+		if (ASIZE((PUCHAR)pfc + chksiz + sizeof(size_t) - ((PUCHAR)ph + HEAP_BEGIN(ph))) >= ph->size)
 			bbtm = USED;
 
 		lwcolsiz = 0;
 		lwcolcnt = 0;
 
-		if (FREE == bbtm)
+		while (FREE == bbtm && FREE == !!(*(size_t *)((PUCHAR)pfc + chksiz + sizeof(size_t)) & (size_t)MASK))
 		{
-			while (FREE == !!(*(size_t *)((PUCHAR)pfc + chksiz + sizeof(size_t)) & (size_t)MASK))
-			{
-				pfc = (P_FREE_CHUNK)((PUCHAR)pfc + chksiz + 2 * sizeof(size_t));
-				chksiz = HEAD_NOTE(pfc) & ~(size_t)MASK;
-				lwcolsiz += chksiz;
-				++lwcolcnt;
+			pfc = (P_FREE_CHUNK)((PUCHAR)pfc + chksiz + 2 * sizeof(size_t));
+			chksiz = HEAD_NOTE(pfc) & ~(size_t)MASK;
+			lwcolsiz += chksiz;
+			++lwcolcnt;
 
-				/* Unlink chunk. */
-				_nmUnlinkChunk(ph, pfc);
-			}
+			/* Unlink chunk. */
+			_nmUnlinkChunk(ph, pfc);
+
+			if (ASIZE((PUCHAR)pfc + chksiz + sizeof(size_t) - ((PUCHAR)ph + HEAP_BEGIN(ph))) >= ph->size)
+				bbtm = USED;
 		}
 
 		/* Coalesce downward. */
@@ -640,7 +640,11 @@ void * nmReallocHeap(P_HEAP_HEADER ph, void * ptr, size_t size)
 		{
 			HEAD_NOTE(pfc) &= USED_MASK;
 			FOOT_NOTE(pfc) &= USED_MASK;
-			return pfc;
+
+			if (chksiz - size < MIN_CHUNK_SIZE)
+				return pfc;
+
+			return _nmSplitChunk(ph, (P_FREE_CHUNK)pfc, size); /* Split. */
 		}
 		else
 		{

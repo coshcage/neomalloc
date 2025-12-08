@@ -90,12 +90,12 @@ typedef struct st_FreeChunk
 #define USED_MASK      (~(size_t)USED - 1)
 
 /* File level function declarations. */
-size_t         _nmCLZ             (size_t n);
-P_FREE_CHUNK * _nmLocateHashTable (P_HEAP_HEADER ph, size_t i);
-void           _nmUnlinkChunk     (P_HEAP_HEADER ph, P_FREE_CHUNK ptr);
-void           _nmRestoreEntrance (P_FREE_CHUNK * ppfc, P_FREE_CHUNK pfc);
-void *         _nmSplitChunk      (P_HEAP_HEADER ph, P_FREE_CHUNK pfc, size_t size);
-void           _nmPutChunk        (P_HEAP_HEADER ph, P_FREE_CHUNK pfc);
+static size_t         _nmCLZ             (size_t n);
+static P_FREE_CHUNK * _nmLocateHashTable (P_HEAP_HEADER ph, size_t i);
+static void           _nmUnlinkChunk     (P_HEAP_HEADER ph, P_FREE_CHUNK ptr);
+static void           _nmRestoreEntrance (P_FREE_CHUNK * ppfc, P_FREE_CHUNK pfc);
+static void *         _nmSplitChunk      (P_HEAP_HEADER ph, P_FREE_CHUNK pfc, size_t size);
+static void           _nmPutChunk        (P_HEAP_HEADER ph, P_FREE_CHUNK pfc);
 
 /* Attention:     This Is An Internal Function. No Interface for Library Users.
  * Function name: _nmCLZ
@@ -104,7 +104,7 @@ void           _nmPutChunk        (P_HEAP_HEADER ph, P_FREE_CHUNK pfc);
  *         n The integer you wan to count.
  * Return value:  Integer of leading zeros.
  */
-size_t _nmCLZ(size_t n)
+static size_t _nmCLZ(size_t n)
 {
 #ifdef __GNUC__
 	if (sizeof(size_t) == sizeof(long))
@@ -143,7 +143,7 @@ size_t _nmCLZ(size_t n)
  *          i Index.
  * Return value:  Pointer to hash table content.
  */
-P_FREE_CHUNK * _nmLocateHashTable(P_HEAP_HEADER ph, size_t i)
+static P_FREE_CHUNK * _nmLocateHashTable(P_HEAP_HEADER ph, size_t i)
 {
 	if (ph->hshsiz > i) /* Locate into hash table directly. */
 		return &i[(P_FREE_CHUNK *)((PUCHAR)ph + sizeof(HEAP_HEADER))];
@@ -159,7 +159,7 @@ P_FREE_CHUNK * _nmLocateHashTable(P_HEAP_HEADER ph, size_t i)
  *        ptr Pointer to a free chunk.
  * Return value:  N/A.
  */
-void _nmUnlinkChunk(P_HEAP_HEADER ph, P_FREE_CHUNK ptr)
+static void _nmUnlinkChunk(P_HEAP_HEADER ph, P_FREE_CHUNK ptr)
 {
 	register P_FREE_CHUNK pfc = ptr, pofc = pfc;
 	register P_FREE_CHUNK * ppfc;
@@ -200,7 +200,7 @@ void _nmUnlinkChunk(P_HEAP_HEADER ph, P_FREE_CHUNK ptr)
  *        pfc Pointer to a free chunk.
  * Return value:  N/A.
  */
-void _nmRestoreEntrance(P_FREE_CHUNK * ppfc, P_FREE_CHUNK pfc)
+static void _nmRestoreEntrance(P_FREE_CHUNK * ppfc, P_FREE_CHUNK pfc)
 {
 	pfc->p[FCP_PREV] = pfc->p[FCP_NEXT] = pfc;
 	if (NULL != *ppfc)
@@ -222,7 +222,7 @@ void _nmRestoreEntrance(P_FREE_CHUNK * ppfc, P_FREE_CHUNK pfc)
  *       size Size of the former chunk.
  * Return value:  The same chunk which is the same to pfc.
  */
-void * _nmSplitChunk(P_HEAP_HEADER ph, P_FREE_CHUNK pfc, size_t size)
+static void * _nmSplitChunk(P_HEAP_HEADER ph, P_FREE_CHUNK pfc, size_t size)
 {
 	register void * pt;
 	register size_t i;
@@ -252,7 +252,7 @@ void * _nmSplitChunk(P_HEAP_HEADER ph, P_FREE_CHUNK pfc, size_t size)
  *        pfc Pointer to a free chunk.
  * Return value:  N/A.
  */
-void _nmPutChunk(P_HEAP_HEADER ph, P_FREE_CHUNK pfc)
+static void _nmPutChunk(P_HEAP_HEADER ph, P_FREE_CHUNK pfc)
 {
 	if ((_nmCLZ(HEAD_NOTE(pfc) & ~(size_t)MASK)) - _nmCLZ(ph->size) > ph->hshsiz)
 	{

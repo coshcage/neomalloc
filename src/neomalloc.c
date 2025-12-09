@@ -322,7 +322,7 @@ P_HEAP_HEADER nmCreateHeap(void * pbase, size_t size, size_t hshsiz)
 	return (P_HEAP_HEADER)pbase;
 }
 
-/* Function name: nmCreateHeap
+/* Function name: nmExtendHeap
  * Description:   Enlarge heap.
  * Parameters:
  *         ph Pointer to heap header.

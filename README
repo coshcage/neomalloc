@@ -8,7 +8,7 @@ A copy of the license is included in the section entitled "GNU
 Free Documentation License".
 
 About Neo Malloc
-	Neo Malloc is a new malloc tool for C programming language.
+	Neo Malloc is a portable new malloc tool for C programming language. It is designed especially for embedded systems with small available memory spaces.
 
                 GNU Free Documentation License
                  Version 1.3, 3 November 2008

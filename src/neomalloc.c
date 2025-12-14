@@ -347,7 +347,7 @@ P_HEAP_HEADER nmExtendHeap(P_HEAP_HEADER ph, size_t sizincl)
 		phead += ph->size - sizeof(size_t);
 
 		i = *(size_t *)phead;
-		bused = !!(i & ~(size_t)MASK);
+		bused = !!(i & (size_t)MASK);
 
 		if (FREE != bused)
 		{

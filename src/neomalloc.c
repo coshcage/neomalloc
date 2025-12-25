@@ -182,7 +182,7 @@ static void _nmUnlinkChunk(P_HEAP_HEADER ph, P_FREE_CHUNK ptr)
 					pfc->p[FCP_NEXT]->p[FCP_PREV] = pfc->p[FCP_PREV];
 
 					i = _nmCLZ(HEAD_NOTE(pfc)) - _nmCLZ(ph->size);
-					if (pfc == *_nmLocateHashTable(ph, i)) /* Reach at linked list header.. */
+					if (pfc == *_nmLocateHashTable(ph, i)) /* Reach at linked list header. */
 						*_nmLocateHashTable(ph, i) = NULL;
 
 					break;

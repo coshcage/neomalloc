@@ -1,5 +1,5 @@
 /*
- * Name:        neomalloc.c
+ * Name:        neomalloc.h
  * Description: Neo malloc core function.
  * Author:      cosh.cage#hotmail.com
  * File ID:     1207250701B1B07250708L00050
@@ -47,4 +47,4 @@ void          nmFreeHeap    (P_HEAP_HEADER ph,    void * ptr);
 void *        nmReallocHeap (P_HEAP_HEADER ph,    void * ptr,   size_t size);
  
 #endif
- 
+

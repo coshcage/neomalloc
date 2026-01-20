@@ -317,7 +317,7 @@ P_HEAP_HEADER nmCreateHeap(void * pbase, size_t size, size_t hshsiz)
 	memcpy(pfc, &fc, sizeof(FREE_CHUNK));
 
 	/* Set hash table. */
-	*_nmLocateHashTable(pbase, _nmCLZ(t) - _nmCLZ(hh.size)) = pfc;
+	*_nmLocateHashTable((P_HEAP_HEADER)pbase, _nmCLZ(t) - _nmCLZ(hh.size)) = pfc;
 
 	return (P_HEAP_HEADER)pbase;
 }
